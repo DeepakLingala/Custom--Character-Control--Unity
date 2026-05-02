@@ -2,7 +2,7 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "PlayerLocoMotionMap",
+            "name": "PlayerLocomotionMap",
             "id": "423a4f1a-1f4b-46a5-b37d-56829d45018f",
             "actions": [
                 {
