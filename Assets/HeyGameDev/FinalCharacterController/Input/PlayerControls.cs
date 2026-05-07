@@ -37,6 +37,15 @@ namespace HeyGameDev.FinalCharacterController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""281845b8-9e50-428f-b5c4-3e9e4b4220c8"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -149,6 +158,17 @@ namespace HeyGameDev.FinalCharacterController
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8bbe1d68-3301-4ffc-8650-bb2bcad30ab0"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -158,6 +178,7 @@ namespace HeyGameDev.FinalCharacterController
             // PlayerLocomotionMap
             m_PlayerLocomotionMap = asset.FindActionMap("PlayerLocomotionMap", throwIfNotFound: true);
             m_PlayerLocomotionMap_Movement = m_PlayerLocomotionMap.FindAction("Movement", throwIfNotFound: true);
+            m_PlayerLocomotionMap_Look = m_PlayerLocomotionMap.FindAction("Look", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -220,11 +241,13 @@ namespace HeyGameDev.FinalCharacterController
         private readonly InputActionMap m_PlayerLocomotionMap;
         private List<IPlayerLocomotionMapActions> m_PlayerLocomotionMapActionsCallbackInterfaces = new List<IPlayerLocomotionMapActions>();
         private readonly InputAction m_PlayerLocomotionMap_Movement;
+        private readonly InputAction m_PlayerLocomotionMap_Look;
         public struct PlayerLocomotionMapActions
         {
             private @PlayerControls m_Wrapper;
             public PlayerLocomotionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
             public InputAction @Movement => m_Wrapper.m_PlayerLocomotionMap_Movement;
+            public InputAction @Look => m_Wrapper.m_PlayerLocomotionMap_Look;
             public InputActionMap Get() { return m_Wrapper.m_PlayerLocomotionMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -237,6 +260,9 @@ namespace HeyGameDev.FinalCharacterController
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
             }
 
             private void UnregisterCallbacks(IPlayerLocomotionMapActions instance)
@@ -244,6 +270,9 @@ namespace HeyGameDev.FinalCharacterController
                 @Movement.started -= instance.OnMovement;
                 @Movement.performed -= instance.OnMovement;
                 @Movement.canceled -= instance.OnMovement;
+                @Look.started -= instance.OnLook;
+                @Look.performed -= instance.OnLook;
+                @Look.canceled -= instance.OnLook;
             }
 
             public void RemoveCallbacks(IPlayerLocomotionMapActions instance)
@@ -264,6 +293,7 @@ namespace HeyGameDev.FinalCharacterController
         public interface IPlayerLocomotionMapActions
         {
             void OnMovement(InputAction.CallbackContext context);
+            void OnLook(InputAction.CallbackContext context);
         }
     }
 }
