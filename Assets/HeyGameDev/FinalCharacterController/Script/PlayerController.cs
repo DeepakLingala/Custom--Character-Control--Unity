@@ -2,13 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace HeyGameDev.FinalCharacterController {
 
     [DefaultExecutionOrder(-1)]
-
     public class PlayerController : MonoBehaviour
     {
+        #region Class Variables
         [Header("Components")]
         [SerializeField] private CharacterController _characterController;
         [SerializeField] private Camera _playerCamera;
@@ -17,23 +16,43 @@ namespace HeyGameDev.FinalCharacterController {
         public float runAcceleration = 0.25f;
         public float runSpeed = 4f;
         public float drag = 0.1f;
+        public float movingThreshold = 0.01f;
 
         [Header("Camera Settings")]
         public float lookSenseH = 0.1f;
-        public float lookSenseV =  0.1f;
+        public float lookSenseV = 0.1f;
         public float lookLimitV = 89f;
 
         private PlayerLocomotionInput _playerLocomotionInput;
+        private PlayerState _playerState;
         private Vector2 _cameraRotation = Vector2.zero;
         private Vector2 _playerTargetRotation = Vector2.zero;
+        #endregion
 
+        #region Startup
         private void Awake()
         {
             _playerLocomotionInput = GetComponent<PlayerLocomotionInput>();
+            _playerState = GetComponent<PlayerState>();
         }
+        #endregion
 
+        #region Update Logic
         private void Update()
         {
+            UpdateMovementState();
+            HandleLateralMovement();
+        }
+
+        private void UpdateMovementState() {
+            bool isMovementInput = _playerLocomotionInput.MovementInput != Vector2.zero;
+            bool isMovingLaterally = IsMovingLaterally();
+
+            PlayerMovementState lateralState = isMovingLaterally || isMovementInput ? PlayerMovementState.Running : PlayerMovementState.Idling;
+            _playerState.SetPlayerMovementState(lateralState);
+        }
+
+        private void HandleLateralMovement() {
             Vector3 cameraForwardXZ = new Vector3(_playerCamera.transform.forward.x, 0f, _playerCamera.transform.forward.z).normalized;
             Vector3 cameraRightXZ = new Vector3(_playerCamera.transform.right.x, 0f, _playerCamera.transform.right.z).normalized;
             Vector3 movementDirection = cameraRightXZ * _playerLocomotionInput.MovementInput.x + cameraForwardXZ * _playerLocomotionInput.MovementInput.y;
@@ -41,15 +60,17 @@ namespace HeyGameDev.FinalCharacterController {
             Vector3 movementDelta = movementDirection * runAcceleration * Time.deltaTime;
             Vector3 newVelocity = _characterController.velocity + movementDelta;
 
-            //Add the drag to Player
+            // Add the drag to Player
             Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
             newVelocity = (newVelocity.magnitude > drag * Time.deltaTime) ? newVelocity - currentDrag : Vector3.zero;
             newVelocity = Vector3.ClampMagnitude(newVelocity, runSpeed);
 
-            // Move character (Unity suggests only calling this once per trick).
+            // Move character
             _characterController.Move(newVelocity * Time.deltaTime);
         }
+        #endregion
 
+        #region LateUpdate Logic
         private void LateUpdate()
         {
             _cameraRotation.x += lookSenseH * _playerLocomotionInput.LookInput.x;
@@ -60,5 +81,15 @@ namespace HeyGameDev.FinalCharacterController {
 
             _playerCamera.transform.rotation = Quaternion.Euler(_cameraRotation.y, _cameraRotation.x, 0f);
         }
+        #endregion
+
+        #region StateChecks
+        private bool IsMovingLaterally() {
+            // Fixed: Changed velocity.y to velocity.z to check horizontal movement
+            Vector3 lateralVelocity = new Vector3(_characterController.velocity.x, 0f, _characterController.velocity.z);
+
+            return lateralVelocity.magnitude > movingThreshold;
+        }
+        #endregion
     }
 }

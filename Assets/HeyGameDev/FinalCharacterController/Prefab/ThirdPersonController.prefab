@@ -4205,6 +4205,8 @@ GameObject:
   - component: {fileID: 3208924351982852424}
   - component: {fileID: 2892615390651269074}
   - component: {fileID: 5828465375177645741}
+  - component: {fileID: 6566617986160652262}
+  - component: {fileID: 2475987860441111879}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -4295,8 +4297,8 @@ MonoBehaviour:
   runAcceleration: 50
   runSpeed: 4
   drag: 30
-  lookSenseH: 20
-  lookSenseV: 20
+  lookSenseH: 0.1
+  lookSenseV: 0.1
   lookLimitV: 70
 --- !u!114 &5828465375177645741
 MonoBehaviour:
@@ -4310,6 +4312,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe0365318d95784a81b90f762e31ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6566617986160652262
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6753310667091811393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d93c87b133c4547a2b7214612f14c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <CurrentPlayerMovementState>k__BackingField: 0
+--- !u!114 &2475987860441111879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6753310667091811393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6d1ff7cbfc08de4c909e7a65b6ef0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 363745721736913722}
 --- !u!1 &6807200586050837511
 GameObject:
   m_ObjectHideFlags: 0
