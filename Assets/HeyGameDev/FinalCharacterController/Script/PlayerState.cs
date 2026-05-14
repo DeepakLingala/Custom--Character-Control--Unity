@@ -12,6 +12,7 @@ namespace HeyGameDev.FinalCharacterController {
 
             CurrentPlayerMovementState = playerMovementState;
         }
+
             
     }
 
