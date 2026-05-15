@@ -64,6 +64,15 @@ namespace HeyGameDev.FinalCharacterController
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleWalk"",
+                    ""type"": ""Button"",
+                    ""id"": ""c058a338-c797-4c5c-8784-ca1c9a03d827"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -209,6 +218,17 @@ namespace HeyGameDev.FinalCharacterController
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e09a629a-5586-4d2b-bc8b-2867e3aae18e"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleWalk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -221,6 +241,7 @@ namespace HeyGameDev.FinalCharacterController
             m_PlayerLocomotionMap_Look = m_PlayerLocomotionMap.FindAction("Look", throwIfNotFound: true);
             m_PlayerLocomotionMap_ToggleSprint = m_PlayerLocomotionMap.FindAction("ToggleSprint", throwIfNotFound: true);
             m_PlayerLocomotionMap_Jump = m_PlayerLocomotionMap.FindAction("Jump", throwIfNotFound: true);
+            m_PlayerLocomotionMap_ToggleWalk = m_PlayerLocomotionMap.FindAction("ToggleWalk", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -286,6 +307,7 @@ namespace HeyGameDev.FinalCharacterController
         private readonly InputAction m_PlayerLocomotionMap_Look;
         private readonly InputAction m_PlayerLocomotionMap_ToggleSprint;
         private readonly InputAction m_PlayerLocomotionMap_Jump;
+        private readonly InputAction m_PlayerLocomotionMap_ToggleWalk;
         public struct PlayerLocomotionMapActions
         {
             private @PlayerControls m_Wrapper;
@@ -294,6 +316,7 @@ namespace HeyGameDev.FinalCharacterController
             public InputAction @Look => m_Wrapper.m_PlayerLocomotionMap_Look;
             public InputAction @ToggleSprint => m_Wrapper.m_PlayerLocomotionMap_ToggleSprint;
             public InputAction @Jump => m_Wrapper.m_PlayerLocomotionMap_Jump;
+            public InputAction @ToggleWalk => m_Wrapper.m_PlayerLocomotionMap_ToggleWalk;
             public InputActionMap Get() { return m_Wrapper.m_PlayerLocomotionMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -315,6 +338,9 @@ namespace HeyGameDev.FinalCharacterController
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @ToggleWalk.started += instance.OnToggleWalk;
+                @ToggleWalk.performed += instance.OnToggleWalk;
+                @ToggleWalk.canceled += instance.OnToggleWalk;
             }
 
             private void UnregisterCallbacks(IPlayerLocomotionMapActions instance)
@@ -331,6 +357,9 @@ namespace HeyGameDev.FinalCharacterController
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
+                @ToggleWalk.started -= instance.OnToggleWalk;
+                @ToggleWalk.performed -= instance.OnToggleWalk;
+                @ToggleWalk.canceled -= instance.OnToggleWalk;
             }
 
             public void RemoveCallbacks(IPlayerLocomotionMapActions instance)
@@ -354,6 +383,7 @@ namespace HeyGameDev.FinalCharacterController
             void OnLook(InputAction.CallbackContext context);
             void OnToggleSprint(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
+            void OnToggleWalk(InputAction.CallbackContext context);
         }
     }
 }
