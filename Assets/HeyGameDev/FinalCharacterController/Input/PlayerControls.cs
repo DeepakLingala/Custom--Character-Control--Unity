@@ -231,6 +231,82 @@ namespace HeyGameDev.FinalCharacterController
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""ThirdPersonMap"",
+            ""id"": ""4a407a92-d659-4ebf-90cc-fb6031bdb365"",
+            ""actions"": [
+                {
+                    ""name"": ""ScrollCamera"",
+                    ""type"": ""Value"",
+                    ""id"": ""e30114d5-ed3f-4934-a711-c60a1286bc92"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""b3cdb74c-d16a-460a-969b-37a522e316f1"",
+                    ""path"": ""<Mouse>/scroll"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ScrollCamera"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PlayerActionMap"",
+            ""id"": ""cbda5298-68b6-4a45-b15d-80b4d8def92f"",
+            ""actions"": [
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""d84f9b13-035f-449d-be8b-822eabec3554"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Gather"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb7efce1-3dba-4406-b018-a22aeb09c4c4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""2e3cdab5-b5e1-4051-8d98-cac35f749588"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2d0a5432-0b77-4227-8cc9-16a4441bb57b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gather"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -242,6 +318,13 @@ namespace HeyGameDev.FinalCharacterController
             m_PlayerLocomotionMap_ToggleSprint = m_PlayerLocomotionMap.FindAction("ToggleSprint", throwIfNotFound: true);
             m_PlayerLocomotionMap_Jump = m_PlayerLocomotionMap.FindAction("Jump", throwIfNotFound: true);
             m_PlayerLocomotionMap_ToggleWalk = m_PlayerLocomotionMap.FindAction("ToggleWalk", throwIfNotFound: true);
+            // ThirdPersonMap
+            m_ThirdPersonMap = asset.FindActionMap("ThirdPersonMap", throwIfNotFound: true);
+            m_ThirdPersonMap_ScrollCamera = m_ThirdPersonMap.FindAction("ScrollCamera", throwIfNotFound: true);
+            // PlayerActionMap
+            m_PlayerActionMap = asset.FindActionMap("PlayerActionMap", throwIfNotFound: true);
+            m_PlayerActionMap_Attack = m_PlayerActionMap.FindAction("Attack", throwIfNotFound: true);
+            m_PlayerActionMap_Gather = m_PlayerActionMap.FindAction("Gather", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -377,6 +460,106 @@ namespace HeyGameDev.FinalCharacterController
             }
         }
         public PlayerLocomotionMapActions @PlayerLocomotionMap => new PlayerLocomotionMapActions(this);
+
+        // ThirdPersonMap
+        private readonly InputActionMap m_ThirdPersonMap;
+        private List<IThirdPersonMapActions> m_ThirdPersonMapActionsCallbackInterfaces = new List<IThirdPersonMapActions>();
+        private readonly InputAction m_ThirdPersonMap_ScrollCamera;
+        public struct ThirdPersonMapActions
+        {
+            private @PlayerControls m_Wrapper;
+            public ThirdPersonMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @ScrollCamera => m_Wrapper.m_ThirdPersonMap_ScrollCamera;
+            public InputActionMap Get() { return m_Wrapper.m_ThirdPersonMap; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(ThirdPersonMapActions set) { return set.Get(); }
+            public void AddCallbacks(IThirdPersonMapActions instance)
+            {
+                if (instance == null || m_Wrapper.m_ThirdPersonMapActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_ThirdPersonMapActionsCallbackInterfaces.Add(instance);
+                @ScrollCamera.started += instance.OnScrollCamera;
+                @ScrollCamera.performed += instance.OnScrollCamera;
+                @ScrollCamera.canceled += instance.OnScrollCamera;
+            }
+
+            private void UnregisterCallbacks(IThirdPersonMapActions instance)
+            {
+                @ScrollCamera.started -= instance.OnScrollCamera;
+                @ScrollCamera.performed -= instance.OnScrollCamera;
+                @ScrollCamera.canceled -= instance.OnScrollCamera;
+            }
+
+            public void RemoveCallbacks(IThirdPersonMapActions instance)
+            {
+                if (m_Wrapper.m_ThirdPersonMapActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IThirdPersonMapActions instance)
+            {
+                foreach (var item in m_Wrapper.m_ThirdPersonMapActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_ThirdPersonMapActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public ThirdPersonMapActions @ThirdPersonMap => new ThirdPersonMapActions(this);
+
+        // PlayerActionMap
+        private readonly InputActionMap m_PlayerActionMap;
+        private List<IPlayerActionMapActions> m_PlayerActionMapActionsCallbackInterfaces = new List<IPlayerActionMapActions>();
+        private readonly InputAction m_PlayerActionMap_Attack;
+        private readonly InputAction m_PlayerActionMap_Gather;
+        public struct PlayerActionMapActions
+        {
+            private @PlayerControls m_Wrapper;
+            public PlayerActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Attack => m_Wrapper.m_PlayerActionMap_Attack;
+            public InputAction @Gather => m_Wrapper.m_PlayerActionMap_Gather;
+            public InputActionMap Get() { return m_Wrapper.m_PlayerActionMap; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(PlayerActionMapActions set) { return set.Get(); }
+            public void AddCallbacks(IPlayerActionMapActions instance)
+            {
+                if (instance == null || m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Add(instance);
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
+                @Gather.started += instance.OnGather;
+                @Gather.performed += instance.OnGather;
+                @Gather.canceled += instance.OnGather;
+            }
+
+            private void UnregisterCallbacks(IPlayerActionMapActions instance)
+            {
+                @Attack.started -= instance.OnAttack;
+                @Attack.performed -= instance.OnAttack;
+                @Attack.canceled -= instance.OnAttack;
+                @Gather.started -= instance.OnGather;
+                @Gather.performed -= instance.OnGather;
+                @Gather.canceled -= instance.OnGather;
+            }
+
+            public void RemoveCallbacks(IPlayerActionMapActions instance)
+            {
+                if (m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IPlayerActionMapActions instance)
+            {
+                foreach (var item in m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public PlayerActionMapActions @PlayerActionMap => new PlayerActionMapActions(this);
         public interface IPlayerLocomotionMapActions
         {
             void OnMovement(InputAction.CallbackContext context);
@@ -384,6 +567,15 @@ namespace HeyGameDev.FinalCharacterController
             void OnToggleSprint(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
             void OnToggleWalk(InputAction.CallbackContext context);
+        }
+        public interface IThirdPersonMapActions
+        {
+            void OnScrollCamera(InputAction.CallbackContext context);
+        }
+        public interface IPlayerActionMapActions
+        {
+            void OnAttack(InputAction.CallbackContext context);
+            void OnGather(InputAction.CallbackContext context);
         }
     }
 }
