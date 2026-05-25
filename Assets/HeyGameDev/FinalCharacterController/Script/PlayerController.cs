@@ -276,7 +276,6 @@ namespace HeyGameDev.FinalCharacterController
         {
             Vector3 normal = CharacterControllerUtils.GetNormalWithSphereCast(_characterController, _groundLayers);
             float angle = Vector3.Angle(normal, Vector3.up);
-            print(angle);
             bool validAngle = angle <= _characterController.slopeLimit;
 
             return _characterController.isGrounded && validAngle;

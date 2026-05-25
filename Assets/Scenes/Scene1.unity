@@ -2655,6 +2655,18 @@ MonoBehaviour:
   _cameraZoomSpeed: 0.1
   _cameraMinZoom: 1
   _cameraMaxZoom: 5
+--- !u!114 &1831213572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1831213556}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8fc5230e67d124d92c667217e4c5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &1852324214
 Mesh:
   m_ObjectHideFlags: 0
@@ -4083,6 +4095,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1831213564}
+    - targetCorrespondingSourceObject: {fileID: 6753310667091811393, guid: 84af37aeba9975148ba0243d742dbbd8,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1831213572}
     - targetCorrespondingSourceObject: {fileID: 7485484780948476986, guid: 84af37aeba9975148ba0243d742dbbd8,
         type: 3}
       insertIndex: -1
