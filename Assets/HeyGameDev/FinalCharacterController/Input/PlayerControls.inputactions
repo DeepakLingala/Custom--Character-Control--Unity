@@ -237,7 +237,7 @@
             ]
         },
         {
-            "name": "PlayerActionMap",
+            "name": "PlayerActionsMap",
             "id": "cbda5298-68b6-4a45-b15d-80b4d8def92f",
             "actions": [
                 {

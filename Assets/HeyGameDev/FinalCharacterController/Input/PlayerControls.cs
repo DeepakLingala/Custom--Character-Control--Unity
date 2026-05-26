@@ -261,7 +261,7 @@ namespace HeyGameDev.FinalCharacterController
             ]
         },
         {
-            ""name"": ""PlayerActionMap"",
+            ""name"": ""PlayerActionsMap"",
             ""id"": ""cbda5298-68b6-4a45-b15d-80b4d8def92f"",
             ""actions"": [
                 {
@@ -321,10 +321,10 @@ namespace HeyGameDev.FinalCharacterController
             // ThirdPersonMap
             m_ThirdPersonMap = asset.FindActionMap("ThirdPersonMap", throwIfNotFound: true);
             m_ThirdPersonMap_ScrollCamera = m_ThirdPersonMap.FindAction("ScrollCamera", throwIfNotFound: true);
-            // PlayerActionMap
-            m_PlayerActionMap = asset.FindActionMap("PlayerActionMap", throwIfNotFound: true);
-            m_PlayerActionMap_Attack = m_PlayerActionMap.FindAction("Attack", throwIfNotFound: true);
-            m_PlayerActionMap_Gather = m_PlayerActionMap.FindAction("Gather", throwIfNotFound: true);
+            // PlayerActionsMap
+            m_PlayerActionsMap = asset.FindActionMap("PlayerActionsMap", throwIfNotFound: true);
+            m_PlayerActionsMap_Attack = m_PlayerActionsMap.FindAction("Attack", throwIfNotFound: true);
+            m_PlayerActionsMap_Gather = m_PlayerActionsMap.FindAction("Gather", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -507,26 +507,26 @@ namespace HeyGameDev.FinalCharacterController
         }
         public ThirdPersonMapActions @ThirdPersonMap => new ThirdPersonMapActions(this);
 
-        // PlayerActionMap
-        private readonly InputActionMap m_PlayerActionMap;
-        private List<IPlayerActionMapActions> m_PlayerActionMapActionsCallbackInterfaces = new List<IPlayerActionMapActions>();
-        private readonly InputAction m_PlayerActionMap_Attack;
-        private readonly InputAction m_PlayerActionMap_Gather;
-        public struct PlayerActionMapActions
+        // PlayerActionsMap
+        private readonly InputActionMap m_PlayerActionsMap;
+        private List<IPlayerActionsMapActions> m_PlayerActionsMapActionsCallbackInterfaces = new List<IPlayerActionsMapActions>();
+        private readonly InputAction m_PlayerActionsMap_Attack;
+        private readonly InputAction m_PlayerActionsMap_Gather;
+        public struct PlayerActionsMapActions
         {
             private @PlayerControls m_Wrapper;
-            public PlayerActionMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-            public InputAction @Attack => m_Wrapper.m_PlayerActionMap_Attack;
-            public InputAction @Gather => m_Wrapper.m_PlayerActionMap_Gather;
-            public InputActionMap Get() { return m_Wrapper.m_PlayerActionMap; }
+            public PlayerActionsMapActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Attack => m_Wrapper.m_PlayerActionsMap_Attack;
+            public InputAction @Gather => m_Wrapper.m_PlayerActionsMap_Gather;
+            public InputActionMap Get() { return m_Wrapper.m_PlayerActionsMap; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
             public bool enabled => Get().enabled;
-            public static implicit operator InputActionMap(PlayerActionMapActions set) { return set.Get(); }
-            public void AddCallbacks(IPlayerActionMapActions instance)
+            public static implicit operator InputActionMap(PlayerActionsMapActions set) { return set.Get(); }
+            public void AddCallbacks(IPlayerActionsMapActions instance)
             {
-                if (instance == null || m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Contains(instance)) return;
-                m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Add(instance);
+                if (instance == null || m_Wrapper.m_PlayerActionsMapActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_PlayerActionsMapActionsCallbackInterfaces.Add(instance);
                 @Attack.started += instance.OnAttack;
                 @Attack.performed += instance.OnAttack;
                 @Attack.canceled += instance.OnAttack;
@@ -535,7 +535,7 @@ namespace HeyGameDev.FinalCharacterController
                 @Gather.canceled += instance.OnGather;
             }
 
-            private void UnregisterCallbacks(IPlayerActionMapActions instance)
+            private void UnregisterCallbacks(IPlayerActionsMapActions instance)
             {
                 @Attack.started -= instance.OnAttack;
                 @Attack.performed -= instance.OnAttack;
@@ -545,21 +545,21 @@ namespace HeyGameDev.FinalCharacterController
                 @Gather.canceled -= instance.OnGather;
             }
 
-            public void RemoveCallbacks(IPlayerActionMapActions instance)
+            public void RemoveCallbacks(IPlayerActionsMapActions instance)
             {
-                if (m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Remove(instance))
+                if (m_Wrapper.m_PlayerActionsMapActionsCallbackInterfaces.Remove(instance))
                     UnregisterCallbacks(instance);
             }
 
-            public void SetCallbacks(IPlayerActionMapActions instance)
+            public void SetCallbacks(IPlayerActionsMapActions instance)
             {
-                foreach (var item in m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces)
+                foreach (var item in m_Wrapper.m_PlayerActionsMapActionsCallbackInterfaces)
                     UnregisterCallbacks(item);
-                m_Wrapper.m_PlayerActionMapActionsCallbackInterfaces.Clear();
+                m_Wrapper.m_PlayerActionsMapActionsCallbackInterfaces.Clear();
                 AddCallbacks(instance);
             }
         }
-        public PlayerActionMapActions @PlayerActionMap => new PlayerActionMapActions(this);
+        public PlayerActionsMapActions @PlayerActionsMap => new PlayerActionsMapActions(this);
         public interface IPlayerLocomotionMapActions
         {
             void OnMovement(InputAction.CallbackContext context);
@@ -572,7 +572,7 @@ namespace HeyGameDev.FinalCharacterController
         {
             void OnScrollCamera(InputAction.CallbackContext context);
         }
-        public interface IPlayerActionMapActions
+        public interface IPlayerActionsMapActions
         {
             void OnAttack(InputAction.CallbackContext context);
             void OnGather(InputAction.CallbackContext context);
